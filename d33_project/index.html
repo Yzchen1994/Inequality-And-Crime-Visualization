@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Net Migration in California: 2013-2014</title>
+
+        <script type="text/javascript" src="https://d3js.org/d3.v4.js"></script>
+        
+        <script type="text/javascript" src="http://use.typekit.com/brf5jpj.js"></script>
+        <script src="//use.typekit.net/drk2sev.js"></script>
+        <script type="text/javascript">try{Typekit.load();}catch(e){}</script> 
+        <script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3-scale-radial.js"></script>
+        <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+              
+        <style type="text/css">
+            
+
+            #selectBox{
+                        position:absolute;
+                        left: 620px;
+                        top: 220px}
+
+            body {
+                margin: 0;
+                background-color: #48494B;
+                font-family: "proxima-nova", "Source Sans Pro", sans-serif;
+                display: block
+                margin: auto
+            }
+
+            #container {
+                width: 800px;
+                margin-left: 30px;
+                margin-right: auto;
+                margin-top: 30px;
+                padding: 30px;
+                background-color: white;
+                box-shadow: 3px 3px 7px #222;
+            }
+            
+            h1 {
+                font-size: 24px;
+                margin: 0;
+            }
+
+            p {
+                font-size: 16px;
+                margin: 15px 0 10px 0;
+            }
+
+            a {
+              color: #799DCB;
+              text-decoration: none;
+              transition: color .3s, background .3s, border .3s;
+            }
+            a:hover {
+              color: #48494b;
+              background: #e7e8e9;
+            }
+
+            svg {
+                background-color: white;
+                padding-left: 20px;
+            }
+            
+            path {
+                fill: #799dcb;
+                stroke-width: 1;
+                stroke: #ddd;
+/*              opacity: 0.7;
+*/              }
+            path:hover {
+                fill:#48494b;
+                cursor:pointer;
+                stroke-width: 2;
+                stroke: #bbb;
+                opacity: 1;
+            }
+
+            #tooltip {
+                width: 250px;
+                height: auto;
+                padding: 5px;
+                background-color: #fff;
+                color: #000;
+                -webkit-border-radius: 5px;
+                -moz-border-radius: 5px;
+                border-radius: 5px;
+                -webkit-box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
+                -moz-box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
+                box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
+                pointer-events: none;
+                position: absolute;
+                }
+                
+            #tooltip.hidden {
+                display: none;
+            }
+            
+            #tooltip p {
+            margin: 0;
+            font-size: 14px;
+            line-height: 18px;
+            }
+            #my_dataviz {
+                position:absolute;
+                        left: 30px;
+                        top: 670px}
+                            }
+
+        </style>
+    </head>
+    <select  id="selectBox" 
+            onchange="changeFunc();" style="width:220px; height:40px;font-size:10pt" >
+        <option value="Unemployment2010(%)">Unemployment2010(%)</option>
+        <option value="Unemployment2011(%)">Unemployment2011(%)</option>
+        <option value="Unemployment2012(%)">Unemployment2012(%)</option>
+        <option value="Unemployment2013(%)">Unemployment2013(%)</option>
+        <option value="Unemployment2014(%)">Unemployment2014(%)</option>
+        <option value="Unemployment2015(%)">Unemployment2015(%)</option>
+        <option value="Unemployment2016(%)">Unemployment2016(%)</option>
+        <option value="Unemployment2017(%)">Unemployment2017(%)</option>
+        <option value="Unemployment2018(%)">Unemployment2018(%)</option>
+        <option value="IncomeChange2010-2017(USD$)">IncomeChange2010-2017(USD$)</option>
+        <option value="IncomeChange2010-2011(USD$)">IncomeChange2010-2011(USD$)</option>
+        <option value="IncomeChange2011-2012(USD$)">IncomeChange2011-2012(USD$)</option>
+        <option value="IncomeChange2012-2013(USD$)">IncomeChange2012-2013(USD$)</option>
+        <option value="IncomeChange2013-2014(USD$)">IncomeChange2013-2014(USD$)</option>
+        <option value="IncomeChange2014-2015(USD$)">IncomeChange2014-2015(USD$)</option>
+        <option value="IncomeChange2015-2016(USD$)">IncomeChange2015-2016(USD$)</option>
+        <option value="IncomeChange2016-2017(USD$)">IncomeChange2016-2017(USD$)</option>
+    </select>
+    <body>
+    
+        <body>
+
+        <div id="container">
+
+            <!-- <h1>Net Migration in California: 2013-2014</h1>
+            <p>This map shows net migration from 2013 to 2014 for California counties based on tax return data (with the exception of Alpine County where the data is from 2012 to 2013). Number of exemptions claimed is a rough proxy for number of residents. The data is limited to people filing tax returns, so it doesn't reflect the entire population.<br><span style="font-size:12px">
+Sources: The IRS, <a href= "http://www.governing.com/gov-data/census/county-migration-flows-tax-returns-data.html">governing.com</a>, <a href="https://www.census.gov/geo/maps-data/data/cbf/cbf_counties.html" target="new">U.S. Census Bureau</a></span></p> -->
+        
+             <div id="key" class="barlabel"><p>Range:</p> </div>
+
+        </div>
+
+        <div id="tooltip" class="hidden">
+            <p>County: <span id="county">County Name</span></p>
+            <p>Amount: <span id="migration">Migration</span></p>
+        </div>
+
+        <div id="my_dataviz"></div>
+        <script type="text/javascript">
+            var DonAndresPlot2 = function(datar) {
+                var margin = {top: 100, right: 0, bottom: 100, left: 0},
+                    width = 500 - margin.left - margin.right,
+                    height = 500 - margin.top - margin.bottom,
+                    innerRadius = 90,
+                    outerRadius = Math.min(width, height) / 2;   // the outerRadius goes from the middle of the SVG area to the border
+
+                // append the svg object
+                var svg = d3.select("#my_dataviz")
+                    .append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                    .attr("transform", "translate(" + (width / 2 + margin.left) + "," + (height / 2 + margin.top) + ")");
+
+                d3.csv(datar, function(data) {
+
+                    console.log(data);
+
+                    data = data.slice().sort((a, b) => d3.descending(a.netMigration2, b.netMigration2))
+                    data = data.slice().sort((a, b) => d3.descending(a.netMigration3, b.netMigration3))
+                    
+
+                  // X scale: common for 2 data series
+                    var x = d3.scaleBand()
+                        .range([0, 2 * Math.PI])    // X axis goes from 0 to 2pi = all around the circle. If I stop at 1Pi, it will be around a half circle
+                        .align(0)                  // This does nothing
+                        .domain(data.map(function(d) { return d.County; })); // The domain of the X axis is the list of states.
+
+                      // Y scale outer variable
+                    var y = d3.scaleRadial()
+                        .range([innerRadius, outerRadius])   // Domain will be define later.
+                        .domain([0, d3.max(data, function(d) { return +d.netMigration2; })]); // Domain of Y is from 0 to the max seen in the data
+
+                      // Second barplot Scales
+                    var ybis = d3.scaleRadial()
+                        .range([innerRadius, 5])   // Domain will be defined later.
+                        .domain([0, d3.max(data, function(d) { return +d.netMigration2; })]);
+
+                      // Add the bars
+                    svg.append("g")
+                        .selectAll("path")
+                        .data(data)
+                        .enter()
+                        .append("path")
+                        .attr("fill", "#5E4FA2")
+                        .attr("class", "yo")
+                        .attr("d", d3.arc()     // imagine your doing a part of a donut plot
+                        .innerRadius(innerRadius)
+                        .outerRadius(function(d) { return y(d['netMigration2']); })
+                        .startAngle(function(d) { return x(d.County); })
+                        .endAngle(function(d) { return x(d.County) + x.bandwidth(); })
+                        .padAngle(0.01)
+                        .padRadius(innerRadius))
+                        .on("mouseover", function(d,i) {
+                            d3.select(this).attr("fill","orange")
+                            ;})
+                        .on("mouseout", function(d) {
+                        d3.select(this).attr("fill",function(d) { return "#5E4FA2"; }
+                                              );})
+                        .append("title")
+                        .text(function(d){
+                        return "Value: "+d.netMigration2+"% or (USD$)";});
+
+                  // Add the labels
+                    svg.append("g")
+                        .selectAll("g")
+                        .data(data)
+                        .enter()
+                        .append("g")
+                        .attr("text-anchor", function(d) { return (x(d.County) + x.bandwidth() / 2 + Math.PI) % (2 * Math.PI) < Math.PI ? "end" : "start"; })
+                        .attr("transform", function(d) { return "rotate(" + ((x(d.County) + x.bandwidth() / 2) * 180 / Math.PI - 90) + ")"+"translate(" + (y(d['netMigration2'])+10) + ",0)"; })
+                        .append("text")
+                        .text(function(d){return(d.County)})
+                        .attr("transform", function(d) { return (x(d.County) + x.bandwidth() / 2 + Math.PI) % (2 * Math.PI) < Math.PI ? "rotate(180)" : "rotate(0)"; })
+                        .style("font-size", "11px")
+                        .attr("alignment-baseline", "middle")
+
+                  // Add the second series
+                    svg.append("g")
+                        .selectAll("path")
+                        .data(data)
+                        .enter()
+                        .append("path")
+                        .attr("fill", "red")
+                        .attr("d", d3.arc()     // imagine your doing a part of a donut plot
+                        .innerRadius( function(d) { return ybis(0) })
+                        .outerRadius( function(d) { return ybis(d['netMigration3']); })
+                        .startAngle(function(d) { return x(d.County); })
+                        .endAngle(function(d) { return x(d.County) + x.bandwidth(); })
+                        .padAngle(0.01)
+                        .padRadius(innerRadius))
+                        .on("mouseover", function(d,i) {
+                            d3.select(this).attr("fill","orange")
+                            ;})
+                        .on("mouseout", function(d) {
+                        d3.select(this).attr("fill",function(d) { return "red"; }
+                                              );})
+                        .append("title")
+                        .text(function(d){
+                        return "Value: -"+d.netMigration3+"% or (USD$)";});
+
+                });
+            };
+            var DonAndresPlott = DonAndresPlot2("unemp20101.csv");
+
+            var DonAndresPlot = function(datar) {
+                //Width and height
+                var w = 760;
+                var h = 600;
+
+                //Define map projection
+                var projection = d3.geoMercator()
+                                       .center([ -120, 37 ])
+                                       .translate([ 380, 330 ])
+                                       .scale([ 2508 ]);
+                //Colors by Cynthia Brewer (colorbrewer2.org)
+    //          var color = d3.scale.linear()
+    //                              .range([ "#762a83", "#f7f7f7", "#1b7837" ]);
+
+                var color = d3.scaleQuantize()
+                                    .range(['#762a83','#9970ab','#c2a5cf','#e7d4e8','#f7f7f7','#d9f0d3','#a6dba0','#5aae61','#1b7837']);
+
+    //          var color = d3.scale.quantize()
+    //                              .range([ "#762a83", "#af8dc3", "#e7d4e8", "#f7f7f7", "#d9f0d3" , "#7fbf7b" , "#1b7837" ]);
+
+                //Define path generator
+                var path = d3.geoPath()
+                                 .projection(projection);
+
+                //Create SVG
+                var svg = d3.select("#container")
+                            .append("svg")
+                            .attr("width", 760)
+                            .attr("height", 600);
+
+                d3.csv(datar, function(data) {
+
+                    console.log(data);
+                    
+                    //color scale input domain 
+                    color.domain([
+                        -d3.max(data, function(d) { return +d.netMigration; }), 
+                        d3.max(data, function(d) { return +d.netMigration; })
+                    ]);
+                
+                    //Load in GeoJSON data
+                    d3.json("cb_2014_us_county_5m2.json", function(json) {
+                        console.log(json);
+                        
+                        //Loop through once for each migration data value
+                        for (var j = 0; j < data.length; j++) {
+                    
+                            //Grab country name
+                            var dataCounty  = data[j].County;
+                            
+                            //Grab data value, and convert from string to float
+                            var dataValue = +data[j].netMigration;
+                    
+                            //Find the corresponding county inside the GeoJSON
+                            for (var k = 0; k < json.features.length; k++) {
+                            
+                                //We'll check the official ISO country code
+                                var jsonCounty = json.features[k].properties.NAME;
+                    
+                                if (dataCounty == jsonCounty) {
+                            
+                                    //Copy the data value into the GeoJSON
+                                    json.features[k].properties.migration = dataValue;
+                                    
+                                    //Stop looking through the JSON
+                                    break;
+                                    
+                                }
+                            }       
+                        }
+                        
+                        if (datar === "unemp2018.csv" ||
+                            datar === "unemp2017.csv" ||
+                            datar === "unemp2016.csv" ||
+                            datar === "unemp2015.csv" ||
+                            datar === "unemp2014.csv" ||
+                            datar === "unemp2013.csv" ||
+                            datar === "unemp2012.csv" ||
+                            datar === "unemp2011.csv" ||
+                            datar === "unemp2010.csv") {
+                            svg.selectAll("path")
+                            .data(json.features)
+                            .enter()
+                            .append("path")
+                            .attr("d", path)
+                            .style("fill", function(d){
+
+                                var value = d.properties.migration;
+
+                                if (value) {
+                                    //If value exists…
+                                    return color(value);
+                                } else {
+                                    //If value is undefined…
+                                    return "#ccc";
+                                }
+                                
+                                })
+                            .on("mouseover", function(d){
+                                var xPosition = 530;
+                                var yPosition = 300;
+    //                          d3.select("path")
+    //                          .attr("stroke-width", 2)
+    //                          .attr("stroke", "#222");
+                                d3.select("#tooltip")
+                                .style("left", 530 + "px")
+                                .style("top", 300 + "px");
+                                d3.select("#county")
+                                .text(d.properties.NAME);
+                                d3.select("#migration")
+                                .text(d.properties.migration + "%");
+                                d3.select("#tooltip")
+                                .classed("hidden", false);
+                                })
+                                .on("mouseout", function(){
+                                d3.select("#tooltip").classed("hidden", true);
+                                });
+                        // block of code to be executed if the condition is true
+                        } else {
+                        // block of code to be executed if the condition is false
+                                svg.selectAll("path")
+                                .data(json.features)
+                                .enter()
+                                .append("path")
+                                .attr("d", path)
+                                .style("fill", function(d){
+
+                                var value = d.properties.migration;
+
+                                if (value) {
+                                    //If value exists…
+                                    return color(value);
+                                } else {
+                                    //If value is undefined…
+                                    return "#ccc";
+                                }
+                                
+                                })
+                                .on("mouseover", function(d){
+                                var xPosition = 530;
+                                var yPosition = 300;
+    //                          d3.select("path")
+    //                          .attr("stroke-width", 2)
+    //                          .attr("stroke", "#222");
+                                d3.select("#tooltip")
+                                .style("left", 530 + "px")
+                                .style("top", 300 + "px");
+                                d3.select("#county")
+                                .text(d.properties.NAME);
+                                d3.select("#migration")
+                                .text(d.properties.migration + " (USD$)");
+                                d3.select("#tooltip")
+                                .classed("hidden", false);
+                                })
+                                .on("mouseout", function(){
+                                d3.select("#tooltip").classed("hidden", true);
+                                });
+                            }
+                        
+                        //Bind data and create one path per GeoJSON feature
+                                
+                // Create key bar
+                        //Define gradient
+                        var gradient = svg.append("svg:defs")
+                            .append("svg:linearGradient")
+                            .attr("id", "gradient")
+                            .attr("x1", "0%")
+                            .attr("y1", "0%")
+                            .attr("x2", "100%")
+                            .attr("y2", "0%")
+                            .attr("spreadMethod", "pad");
+                
+                        //Define gradient colors
+                        gradient.append("svg:stop")
+                            .attr("offset", "0%")
+                            .attr("stop-color", "#762a83")
+                            .attr("stop-opacity", 1);
+            
+                        gradient.append("svg:stop")
+                            .attr("offset", "50%")
+                            .attr("stop-color", "#f7f7f7")
+                            .attr("stop-opacity", 1);
+
+                        gradient.append("svg:stop")
+                            .attr("offset", "100%")
+                            .attr("stop-color", "#1b7837")
+                            .attr("stop-opacity", 1);
+                        
+                        //key bar variables             
+                        var keybarW = 200,
+                            keybarH = 12,
+                            keybarPad = 10;                 
+                        
+                        var keybar = d3.select("#key")
+                        .append("svg")
+                        .attr("width", 360)
+                        .attr("height", 18);
+                        
+                        keybar.append("rect")
+                        .attr("x", 45)
+                        .attr("y", 0)
+                        .attr("width", 200)
+                        .attr("height", 12)
+                        .attr("fill", "url(#gradient)");
+            
+                        // Key bar text front
+                        keybar.append("text")
+                            .text(-d3.max(data, function(d) { return +d.netMigration; }))
+                            .attr("x", 40)
+                            .attr("y", 10)
+                            .attr("font-size", "11px")
+                            .attr("font-weight", "bold")
+                            .attr("text-anchor", "end")
+                            .style("fill", "black");
+            
+                        // Key bar text back
+                        keybar.append("text")
+                            .text(d3.max(data, function(d) { return +d.netMigration; }))
+                            .attr("x", 253)
+                            .attr("y", 10)
+                            .attr("font-size", "11px")
+                            .attr("font-weight", "bold")
+                            .attr("text-anchor", "start")
+                            .style("fill", "black");
+
+                        // Key bar text middle
+                        keybar.append("text")
+                            .text("zero")
+                            .attr("x", 130)
+                            .attr("y", 9)
+                            .attr("font-weight", "bold")
+                            .attr("font-size", "11px")
+                            .attr("text-anchor", "middle")
+                            .style("fill", "black");
+                
+                    });
+                });
+            };
+            var DonAndresPlot1 = DonAndresPlot("unemp20101.csv");
+
+            function changeFunc() {
+                var selectBox = document.getElementById("selectBox");
+                var svalue = selectBox.options[selectBox.selectedIndex].value;
+                
+                if (svalue === "Unemployment2018(%)") {
+                  d3.selectAll("svg").remove();;
+                  var DonAndresPlot1 = DonAndresPlot("unemp20181.csv");
+                  var DonAndresPlott = DonAndresPlot2("unemp20181.csv");
+                }
+                if (svalue === "Unemployment2017(%)") {
+                  d3.selectAll("svg").remove();;
+                  var DonAndresPlot1 = DonAndresPlot("unemp20171.csv");
+                  var DonAndresPlott = DonAndresPlot2("unemp20171.csv");
+                }
+                if (svalue === "Unemployment2016(%)") {
+                  d3.selectAll("svg").remove();;
+                  var DonAndresPlot1 = DonAndresPlot("unemp20161.csv");
+                  var DonAndresPlott = DonAndresPlot2("unemp20161.csv");
+                }
+                if (svalue === "Unemployment2015(%)") {
+                  d3.selectAll("svg").remove();;
+                  var DonAndresPlot1 = DonAndresPlot("unemp20151.csv");
+                  var DonAndresPlott = DonAndresPlot2("unemp20151.csv");
+                }
+                if (svalue === "Unemployment2014(%)") {
+                  d3.selectAll("svg").remove();;
+                  var DonAndresPlot1 = DonAndresPlot("unemp20141.csv");
+                  var DonAndresPlott = DonAndresPlot2("unemp20141.csv");
+                }
+                if (svalue === "Unemployment2013(%)") {
+                  d3.selectAll("svg").remove();;
+                  var DonAndresPlot1 = DonAndresPlot("unemp20131.csv");
+                  var DonAndresPlott = DonAndresPlot2("unemp20131.csv");
+                }
+                if (svalue === "Unemployment2012(%)") {
+                  d3.selectAll("svg").remove();;
+                  var DonAndresPlot1 = DonAndresPlot("unemp20121.csv");
+                  var DonAndresPlott = DonAndresPlot2("unemp20121.csv");
+                }
+                if (svalue === "Unemployment2011(%)") {
+                  d3.selectAll("svg").remove();;
+                  var DonAndresPlot1 = DonAndresPlot("unemp20111.csv");
+                  var DonAndresPlott = DonAndresPlot2("unemp20111.csv");
+                }
+                if (svalue === "Unemployment2010(%)") {
+                  d3.selectAll("svg").remove();;
+                  var DonAndresPlot1 = DonAndresPlot("unemp20101.csv");
+                  var DonAndresPlott = DonAndresPlot2("unemp20101.csv");
+                }
+                if (svalue === "IncomeChange2010-2017(USD$)") {
+                  d3.selectAll("svg").remove();;
+                  var DonAndresPlot1 = DonAndresPlot("Big_data1.csv");
+                  var DonAndresPlott = DonAndresPlot2("Big_data1.csv");
+                }
+                if (svalue === "IncomeChange2010-2011(USD$)") {
+                  d3.selectAll("svg").remove();;
+                  var DonAndresPlot1 = DonAndresPlot("cali_10111.csv");
+                  var DonAndresPlott = DonAndresPlot2("cali_10111.csv");
+                }
+                if (svalue === "IncomeChange2011-2012(USD$)") {
+                  d3.selectAll("svg").remove();;
+                  var DonAndresPlot1 = DonAndresPlot("cali_1112.csv");
+                  var DonAndresPlott = DonAndresPlot2("cali_1112.csv");
+                }
+                if (svalue === "IncomeChange2012-2013(USD$)") {
+                  d3.selectAll("svg").remove();;
+                  var DonAndresPlot1 = DonAndresPlot("cali_1213.csv");
+                  var DonAndresPlott = DonAndresPlot2("cali_1213.csv");
+                }
+                if (svalue === "IncomeChange2013-2014(USD$)") {
+                  d3.selectAll("svg").remove();;
+                  var DonAndresPlot1 = DonAndresPlot("cali_1314.csv");
+                  var DonAndresPlott = DonAndresPlot2("cali_1314.csv");
+                }
+                if (svalue === "IncomeChange2014-2015(USD$)") {
+                  d3.selectAll("svg").remove();;
+                  var DonAndresPlot1 = DonAndresPlot("cali_1415.csv");
+                  var DonAndresPlott = DonAndresPlot2("cali_1415.csv");
+                }
+                if (svalue === "IncomeChange2015-2016(USD$)") {
+                  d3.selectAll("svg").remove();;
+                  var DonAndresPlot1 = DonAndresPlot("cali_1516.csv");
+                  var DonAndresPlott = DonAndresPlot2("cali_1516.csv");
+                }
+                if (svalue === "IncomeChange2016-2017(USD$)") {
+                  d3.selectAll("svg").remove();;
+                  var DonAndresPlot1 = DonAndresPlot("cali_1617.csv");
+                  var DonAndresPlott = DonAndresPlot2("cali_1617.csv");
+                }
+            }
+
+        </script>
+        
+    </body>
+</html>
