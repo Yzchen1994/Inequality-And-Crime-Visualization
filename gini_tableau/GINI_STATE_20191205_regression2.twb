@@ -144,7 +144,7 @@
       <column aggregation='Sum' caption='Row1' datatype='integer' name='[Row]' role='dimension' type='ordinal' />
       <column aggregation='Sum' caption='Space1' datatype='integer' name='[Space]' role='dimension' type='ordinal' />
       <column caption='Year1' datatype='integer' name='[Year]' role='dimension' type='quantitative' />
-      <column caption='Stusps' datatype='string' name='[stusps]' role='dimension' semantic-role='[State].[Name]' type='nominal' />
+      <column caption='State' datatype='string' name='[stusps]' role='dimension' semantic-role='[State].[Name]' type='nominal' />
       <column-instance column='[stusps]' derivation='None' name='[none:stusps:nk]' pivot='key' type='nominal' />
       <extract count='-1' enabled='true' units='records'>
         <connection access_mode='readonly' authentication='auth-none' author-locale='en_US' class='hyper' dbname='/Users/yuzechen/Google Drive/Berkeley/W209 Data Visualization/all_data/merged_clean_extract.hyper' default-settings='yes' schema='Extract' sslmode='' tablename='Extract' update-time='12/03/2019 02:05:34 AM' username='tableau_internal_user'>
@@ -287,7 +287,7 @@
       <activation auto-clear='true' type='on-select' />
       <source type='sheet' worksheet='Sheet 3' />
       <command command='tsc:brush'>
-        <param name='field-captions' value='Stusps' />
+        <param name='field-captions' value='State' />
         <param name='target' value='Sheet 3' />
       </command>
     </action>
@@ -316,7 +316,7 @@
             <column-instance column='[Space]' derivation='None' name='[none:Space:ok]' pivot='key' type='ordinal' />
             <column-instance column='[Year]' derivation='None' name='[none:Year:ok]' pivot='key' type='ordinal' />
             <column-instance column='[stusps]' derivation='None' name='[none:stusps:nk]' pivot='key' type='nominal' />
-            <column caption='Stusps' datatype='string' name='[stusps]' role='dimension' semantic-role='[State].[Name]' type='nominal' />
+            <column caption='State' datatype='string' name='[stusps]' role='dimension' semantic-role='[State].[Name]' type='nominal' />
           </datasource-dependencies>
           <filter class='categorical' column='[federated.19mv4ye0tzyok614uaqj91u3uuaz].[none:Year:ok]'>
             <groupfilter function='member' level='[none:Year:ok]' member='2009' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-marker='enumerate' />
@@ -383,7 +383,7 @@
             <column-instance column='[GINI]' derivation='Avg' name='[avg:GINI:qk]' pivot='key' type='quantitative' />
             <column-instance column='[Year]' derivation='None' name='[none:Year:ok]' pivot='key' type='ordinal' />
             <column-instance column='[stusps]' derivation='None' name='[none:stusps:nk]' pivot='key' type='nominal' />
-            <column caption='Stusps' datatype='string' name='[stusps]' role='dimension' semantic-role='[State].[Name]' type='nominal' />
+            <column caption='State' datatype='string' name='[stusps]' role='dimension' semantic-role='[State].[Name]' type='nominal' />
           </datasource-dependencies>
           <filter class='categorical' column='[federated.19mv4ye0tzyok614uaqj91u3uuaz].[none:Year:ok]'>
             <groupfilter function='member' level='[none:Year:ok]' member='2009' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-marker='enumerate' />
@@ -439,7 +439,7 @@
             <column-instance column='[GINI]' derivation='Avg' name='[avg:GINI:qk]' pivot='key' type='quantitative' />
             <column-instance column='[Year]' derivation='None' name='[none:Year:qk]' pivot='key' type='quantitative' />
             <column-instance column='[stusps]' derivation='None' name='[none:stusps:nk]' pivot='key' type='nominal' />
-            <column caption='Stusps' datatype='string' name='[stusps]' role='dimension' semantic-role='[State].[Name]' type='nominal' />
+            <column caption='State' datatype='string' name='[stusps]' role='dimension' semantic-role='[State].[Name]' type='nominal' />
           </datasource-dependencies>
           <filter class='categorical' column='[federated.19mv4ye0tzyok614uaqj91u3uuaz].[none:stusps:nk]'>
             <groupfilter function='union' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-marker='enumerate'>
@@ -537,8 +537,8 @@
         <devicelayout auto-generated='true' name='Phone'>
           <size maxheight='700' minheight='700' sizing-mode='vscroll' />
           <zones>
-            <zone h='100000' id='44' type='layout-basic' w='100000' x='0' y='0'>
-              <zone h='98000' id='45' param='vert' type='layout-flow' w='98400' x='800' y='1000'>
+            <zone h='100000' id='46' type='layout-basic' w='100000' x='0' y='0'>
+              <zone h='98000' id='47' param='vert' type='layout-flow' w='98400' x='800' y='1000'>
                 <zone h='12125' id='8' mode='slider' name='Sheet 1' param='[federated.19mv4ye0tzyok614uaqj91u3uuaz].[none:Year:ok]' type='filter' w='82400' x='800' y='1000'>
                   <zone-style>
                     <format attr='border-color' value='#000000' />
@@ -633,8 +633,8 @@
         <devicelayout auto-generated='true' name='Phone'>
           <size maxheight='700' minheight='700' sizing-mode='vscroll' />
           <zones>
-            <zone h='100000' id='37' type='layout-basic' w='100000' x='0' y='0'>
-              <zone h='98000' id='38' param='vert' type='layout-flow' w='98400' x='800' y='1000'>
+            <zone h='100000' id='39' type='layout-basic' w='100000' x='0' y='0'>
+              <zone h='98000' id='40' param='vert' type='layout-flow' w='98400' x='800' y='1000'>
                 <zone h='9375' id='8' mode='slider' name='Sheet 2' param='[federated.19mv4ye0tzyok614uaqj91u3uuaz].[none:Year:ok]' type='filter' w='82400' x='800' y='1000'>
                   <zone-style>
                     <format attr='border-color' value='#000000' />
@@ -677,7 +677,7 @@
     </dashboard>
   </dashboards>
   <windows source-height='30'>
-    <window class='worksheet' name='Sheet 1'>
+    <window class='worksheet' maximized='true' name='Sheet 1'>
       <cards>
         <edge name='left'>
           <strip size='160'>
@@ -717,7 +717,7 @@
       </viewpoint>
       <simple-id uuid='{5F407C58-22D1-45A1-84DE-AAB575135BBE}' />
     </window>
-    <window class='dashboard' maximized='true' name='Dashboard 1'>
+    <window class='dashboard' name='Dashboard 1'>
       <viewpoints>
         <viewpoint name='Sheet 1' />
       </viewpoints>
