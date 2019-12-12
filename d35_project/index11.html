@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<!-- Initialize a select button -->
+<select id="selectButton2"></select>
+
+<!-- Create a div where the graph will take place -->
+<div id="my_dataviz2"></div>
+
+<div id="my_dataviz3"></div>
+  
+
+
+<!-- Color Scale -->
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+
+<style type="text/css">
+  #selectButton2 {
+                position:absolute;
+                left: 500px;
+                top: 60px}
+  #my_dataviz2 {
+                position:absolute;
+                left: 20px;
+                top: 60px}
+
+  #my_dataviz3 {
+                position:absolute;
+                left: 20px;
+                top: 600px}
+  
+</style>
+
+<script>
+
+var DonAndresPlot4 = function(datat, dataz) {
+// set the dimensions and margins of the graph
+  var margin = {top: 10, right: 100, bottom: 50, left: 50},
+      width = 460 - margin.left - margin.right,
+      height = 400 - margin.top - margin.bottom;
+
+  // append the svg object to the body of the page
+  // var svg = d3.select("#my_dataviz2")
+  //   .append("svg")
+  //     .attr("width", width + margin.left + margin.right)
+  //     .attr("height", height + margin.top + margin.bottom)
+  //   .append("g")
+  //     .attr("transform",
+  //           "translate(" + margin.left + "," + margin.top + ")");
+  var chart1 = d3.select("#my_dataviz2")
+    .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  //Read the data
+
+  var chart2 = d3.select("#my_dataviz3")
+    .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+  d3.csv(datat, function(data1) {
+    d3.csv(dataz, function(data2) {
+
+
+      // List of groups (here I have one group per column)
+      var allGroup = [   "Alameda", "Alpine",  "Amador",  "Butte",   "Calaveras",   "Colusa",  "Contra Costa",    "Del Norte",   "El Dorado",   "Fresno",  "Glenn",   "Humboldt",    "Imperial",    "Inyo",    "Kern",    "Kings",   "Lake",    "Lassen",  "Los Angeles", "Madera",  "Marin",   "Mariposa",    "Mendocino",   "Merced",  "Modoc",   "Mono",    "Monterey",    "Napa",    "Nevada",  "Orange",  "Placer",  "Plumas",  "Riverside",   "Sacramento",  "San Benito",  "San Bernardino",  "San Diego",   "San Francisco",   "San Joaquin", "San Luis Obispo", "San Mateo",   "Santa Barbara",   "Santa Clara", "Santa Cruz",  "Shasta",  "Sierra",  "Siskiyou",    "Solano",  "Sonoma",  "Stanislaus",  "Sutter",  "Tehama",  "Trinity", "Tulare",  "Tuolumne",    "Ventura", "Yolo",    "Yuba"]
+
+      // add the options to the button
+      d3.select("#selectButton2")
+        .selectAll('myOptions')
+          .data(allGroup)
+        .enter()
+          .append('option')
+        .text(function (d) { return d; }) // text showed in the menu
+        .attr("value", function (d) { return d; }) // corresponding value returned by the button
+
+      // Add X axis --> it is a date format
+      var x = d3.scaleLinear()
+        .domain([2011,2017])
+        .range([ 0, width ]);
+      chart1.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x))
+        .selectAll("text")
+        .attr("y", 0)
+        .attr("x", 9)
+        .attr("dy", ".35em")
+        .attr("transform", "rotate(45)")
+        .style("text-anchor", "start");
+
+      // Add Y axis
+      var y = d3.scaleLinear()
+        .domain( [-20000,20000])
+        .range([ height, 0 ]);
+      chart1.append("g")
+        .call(d3.axisLeft(y));
+
+      // Initialize line with group a
+      var line = chart1
+        .append('g')
+        .append("path")
+          .datum(data1)
+          .attr("d", d3.line()
+            .x(function(d) { return x(+d.time) })
+            .y(function(d) { return y(+d.Alameda) })
+          )
+          .attr("stroke", "black")
+          .style("stroke-width", 4)
+          .style("fill", "none")
+
+      // Initialize dots with group a
+      var dot = chart1
+        .selectAll('circle')
+        .data(data1)
+        .enter()
+        .append('circle')
+          .attr("cx", function(d) { return x(+d.time) })
+          .attr("cy", function(d) { return y(+d.Alameda) })
+          .attr("r", 7)
+          .style("fill", "#69b3a2")
+
+      var x2= d3.scaleLinear()
+        .domain([2010,2019])
+        .range([ 0, width ]);
+      chart2.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x2));
+
+      // Add Y axis
+      var y2 = d3.scaleLinear()
+        .domain( [0,30])
+        .range([ height, 0 ]);
+      chart2.append("g")
+        .call(d3.axisLeft(y2));
+
+      // Initialize line with group a
+      var line2 = chart2
+        .append('g')
+        .append("path")
+          .datum(data2)
+          .attr("d", d3.line()
+            .x(function(dd) { return x2(+dd.time) })
+            .y(function(dd) { return y2(+dd.Alameda) })
+          )
+          .attr("stroke", "black")
+          .style("stroke-width", 4)
+          .style("fill", "none")
+
+      // Initialize dots with group a
+      var dot2 = chart2
+        .selectAll('circle')
+        .data(data2)
+        .enter()
+        .append('circle')
+          .attr("cx", function(dd) { return x2(+dd.time) })
+          .attr("cy", function(dd) { return y2(+dd.Alameda) })
+          .attr("r", 7)
+          .style("fill", "#69b3a2")
+      // A function that update the chart
+      function update(selectedGroup) {
+
+        // Create new data with the selection?
+        var dataFilter = data1.map(function(d){return {time: d.time, value:d[selectedGroup]} })
+        var dataFilter2 = data2.map(function(dd){return {time: dd.time, value:dd[selectedGroup]} })
+
+        // Give these new data to update line
+        line
+            .datum(dataFilter)
+            .transition()
+            .duration(1000)
+            .attr("d", d3.line()
+              .x(function(d) { return x(+d.time) })
+              .y(function(d) { return y(+d.value) })
+            )
+        dot
+          .data(dataFilter)
+          .transition()
+          .duration(1000)
+            .attr("cx", function(d) { return x(+d.time) })
+            .attr("cy", function(d) { return y(+d.value) })
+
+        line2
+            .datum(dataFilter2)
+            .transition()
+            .duration(1000)
+            .attr("d", d3.line()
+              .x(function(dd) { return x2(+dd.time) })
+              .y(function(dd) { return y2(+dd.value) })
+            )
+        dot2
+          .data(dataFilter2)
+          .transition()
+          .duration(1000)
+            .attr("cx", function(dd) { return x2(+dd.time) })
+            .attr("cy", function(dd) { return y2(+dd.value) })
+      }
+
+      // When the button is changed, run the updateChart function
+      d3.select("#selectButton2").on("change", function(d) {
+          // recover the option that has been chosen
+
+          var selectedOption = d3.select(this).property("value")
+          // run the updateChart function with this selected option
+          update(selectedOption)
+      })
+    })
+  })
+};
+var DonAndresPlott4 = DonAndresPlot4("p4deltas.csv", "p3deltas.csv");
+
+
+
+</script>
