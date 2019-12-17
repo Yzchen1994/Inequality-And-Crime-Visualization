@@ -42,7 +42,7 @@ Then open your browser on http://127.0.0.1:8000
 
 ## License
  
-The MIT License (MIT)
+[The MIT License (MIT)](https://choosealicense.com/licenses/mit/)
 
 Copyright (c) 2019 Yuze Chen, Bryan Morgan, Andres Zamora
 
