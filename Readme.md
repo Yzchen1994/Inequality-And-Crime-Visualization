@@ -5,7 +5,7 @@ A visualization to use Gini index to measure inequality, and visualize the relat
 
 ### [Live Demo](http://w209.devmaxlab.com)
 ### [Video Demo](https://www.youtube.com/watch?v=88hprjjbLQg)
-![alt text](http://w209.devmaxlab.com/img/demo.gif)
+![alt text](http://w209.devmaxlab.com/img/w209-demo.gif)
 
 The Inequality and Crime website allows the user to:
 - Understand how Gini Index means for inequality of an area.
